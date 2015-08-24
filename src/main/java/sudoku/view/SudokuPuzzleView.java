@@ -16,40 +16,42 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.text.DefaultFormatterFactory;
 import javax.swing.text.MaskFormatter;
 
-public class SudokuView {
+public class SudokuPuzzleView {
 
 	private static final Insets sixPixelInset = new Insets(6, 6, 6, 6);
 	private static Integer sudokuSize;
-	private static final Integer startPuzzle = 0;
-	private static final Integer solvedPuzzle = 1;
 	
 	private JFrame sudokuFrame;
 	private ArrayList<ArrayList<ArrayList<JFormattedTextField>>>	sudukoPuzzle;
 	private JButton solveButton;
 	
-	public SudokuView(int sudokuSize) {
-		SudokuView.sudokuSize = sudokuSize;
-		sudukoPuzzle = new ArrayList<ArrayList<ArrayList<JFormattedTextField>>>();
-		
+	public SudokuPuzzleView(int sudokuSize) {
+		SudokuPuzzleView.sudokuSize = sudokuSize;
+		initSudokuView();
+	}
+	
+    private void initSudokuView() {
+    	sudukoPuzzle = new ArrayList<ArrayList<ArrayList<JFormattedTextField>>>();
 		sudokuFrame = new JFrame("Sudoku Solver");
 		sudokuFrame.getContentPane().add(createSudokuView(), BorderLayout.CENTER);
 		sudokuFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		sudokuFrame.setMinimumSize(new Dimension(700, 350));
 		sudokuFrame.setVisible(true);
 		sudokuFrame.pack();
-	}
+    }
 
 	private JPanel createSudokuView(){							
 		JPanel centerPanel = new JPanel(new GridBagLayout());
-		centerPanel.add(createSudokuGrid(startPuzzle, true));
+		centerPanel.add(createSudokuGrid(true));
 		centerPanel.add(createSolveButton());
-		centerPanel.add(createSudokuGrid(solvedPuzzle, false));
+		centerPanel.add(createSudokuGrid(false));
 		return centerPanel;
 	}
 	
-	private JPanel createSudokuGrid(int index, boolean editable){
+	private JPanel createSudokuGrid(boolean editable){
 		JPanel centerOuterPanelGrid = new JPanel(new GridLayout(sudokuSize, sudokuSize, 6, 6));
 		sudukoPuzzle.add(new ArrayList<ArrayList<JFormattedTextField>>());							//new Index for Start puzzle (0) or Solved puzzle (1)
+		int index = sudukoPuzzle.size() - 1;
         for (int i = 0; i < sudokuSize; i++) {
         	sudukoPuzzle.get(index).add(new ArrayList<JFormattedTextField>());						//new row
             for (int j = 0; j < sudokuSize; j++) {
@@ -69,7 +71,7 @@ public class SudokuView {
     private JFormattedTextField createField(boolean editable) {
     	JFormattedTextField field = new JFormattedTextField();
         try {
-            field.setFormatterFactory(new DefaultFormatterFactory(new MaskFormatter("#")));
+            field.setFormatterFactory(new DefaultFormatterFactory(new MaskFormatter(getMaskFormatString())));
         } catch (java.text.ParseException ex) {
         	System.err.println("formatter is bad: " + ex.getMessage());
         }
@@ -80,7 +82,15 @@ public class SudokuView {
         field.setBackground(Color.WHITE); // Default is gray for non-editables, change to white for consistent TextFields
         return field;
     }
- 
+    
+    private String getMaskFormatString() {
+    	String format = "";
+    	for (int i = 0; i < String.valueOf(sudokuSize).length(); i++) {
+    		format = format + "#";
+    	}
+    	return format;
+    }
+   
     public JButton getSolveButton(){
         return solveButton;
     }

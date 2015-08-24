@@ -1,6 +1,6 @@
 package sudoku.model;
 
-public class SudokuTemplate {
+public class SudokuPuzzleTemplate {
 
 	public void sudokuExamplePuzzle(int[][] sudokuPuzzle) {
 	    sudokuPuzzle[0][0] = 2;

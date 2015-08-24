@@ -3,33 +3,37 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.ParseException;
+
 import java.awt.event.ActionEvent;
 
-import sudoku.model.SudokuModel;
-import sudoku.model.SudokuTemplate;
-import sudoku.view.SudokuView;
-import sudoku.solver.SudokuSolver;
+import sudoku.model.SudokuPuzzleModel;
+import sudoku.model.SudokuPuzzleTemplate;
+import sudoku.view.SudokuPuzzleView;
 
-public class SudokuController {
+public class SudokuPuzzleController {
 
-	private SudokuModel model;
-	private SudokuView view;
-	private SudokuSolver solver;
-	private SudokuTemplate template;
+	private SudokuPuzzleModel model;
+	private SudokuPuzzleView view;
 	private static int startPuzzle = 0;
 	private static int solvedPuzzle = 1;
 	
-    public SudokuController(SudokuModel model, SudokuView view, SudokuSolver solver){
+    public SudokuPuzzleController(SudokuPuzzleModel model, SudokuPuzzleView view){
         this.model = model;
         this.view = view;
-        this.solver = solver;
-        template = new SudokuTemplate();
+        initController();
+    }
+    
+    private void initController(){
+    	//isValidDimension(model.getRow());		// getColumn is also possible. Row and Col are the same (based on sudokuSize).
+    	controlSolveButton();
+        //loadTemplate();
+        changeField();
     }
     
     public void controlSolveButton(){        
         ActionListener actionListener = new ActionListener() {
               public void actionPerformed(ActionEvent actionEvent) {
-            	  solver.solveSudoku(model);
+            	  model.solveSudoku(model);
             	  updateView(solvedPuzzle);
               }
         };                
@@ -39,8 +43,8 @@ public class SudokuController {
     public void changeField(){
 		PropertyChangeListener propertyChangeListener = new PropertyChangeListener(){
     		public void propertyChange(PropertyChangeEvent evt) {
-        		if (evt.getNewValue() != null) {  // && evt.getNewValue().equals("false") && !(evt.getPropertyName().equals("editValid"))
-        			System.out.println(evt.getOldValue() + "  " + evt.getNewValue()); // + "  " + view.getField(0, 0, 0).getText());
+        		if (evt.getNewValue() != null) {  
+        			System.out.println(evt.getOldValue() + "  " + evt.getNewValue());
         		}
         	}
     	};
@@ -48,12 +52,12 @@ public class SudokuController {
     	for (int row = 0; row < model.getRow(); row++){
     		for (int col = 0; col < model.getColumn(); col++){
     			try {
-					view.getField(0, row, col).commitEdit();
+					view.getField(startPuzzle, row, col).commitEdit();
 				} catch (ParseException e) {
-					// TODO Auto-generated catch block
+					//Do Something Here
 					//e.printStackTrace();
 				}
-    			view.getField(0, row, col).addPropertyChangeListener("value", propertyChangeListener);
+    			view.getField(startPuzzle, row, col).addPropertyChangeListener("value", propertyChangeListener);
         	}
     	}
     }
@@ -68,13 +72,13 @@ public class SudokuController {
     				value = null;
     			}
     			view.getField(index, row, col).setText(value);
-
         	}
     	}
     }
     
     public void loadTemplate() {
+    	SudokuPuzzleTemplate template = new SudokuPuzzleTemplate();
     	template.sudokuExamplePuzzle(model.getSudokuPuzzle());
     	updateView(startPuzzle);
-    }
+     }
 }

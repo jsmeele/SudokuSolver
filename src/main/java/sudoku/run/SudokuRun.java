@@ -2,49 +2,22 @@ package sudoku.run;
 
 import javax.swing.SwingUtilities;
 
-import sudoku.controller.SudokuController;
-import sudoku.model.SudokuModel;
-import sudoku.solver.SudokuSolver;
-import sudoku.view.SudokuView;
+import sudoku.controller.SudokuPuzzleController;
+import sudoku.model.SudokuPuzzleModel;
+import sudoku.view.SudokuPuzzleView;
 
 public class SudokuRun {
-//    public void run() {
-//        // ******************** here You can swap Your true implementation
-//        //SudokuImplementation sudokuImplementation = new DummySudokuImplementation();
-//        // ***************************** *************** ********* **** ** *
-//
-//
-//        SudokuView sudokuView = new SudokuView();
-//        //sudokuView.setSudokuImplementation(sudokuImplementation);
-//        sudokuView.setVisible(true);
-//    }
-//    
-//    public static void main(String args[]) {
-//        tryToSetSystemLookAndFeel();
-//        EventQueue.invokeLater(new SudokuRun());
-//    }
-//
-//    private static void tryToSetSystemLookAndFeel() {
-//        try {
-//            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-//        } catch (Exception ex) {
-//            System.out.println("Couldn't set LAF");
-//        }
-//    }
-	
-	private static int sudokuSize = 9;
+	private static int sudokuSize = 9;		//3x3, 4x4, 5x5 6x6 are fine
 	
 	public static void main (String[] args){
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {                                           
-            	SudokuModel model = new SudokuModel(sudokuSize);
-            	SudokuView view = new SudokuView(sudokuSize); 
-            	SudokuSolver solver = new SudokuSolver(); 
-            	SudokuController controller = new SudokuController(model,view, solver);
-            	controller.loadTemplate();
-            	controller.controlSolveButton();
-            	controller.changeField();
+//            	SudokuSize sizeView = new SudokuSize();
+//            	new SudokuSizeController(sizeView);
+            	SudokuPuzzleView view = new SudokuPuzzleView(sudokuSize);
+            	SudokuPuzzleModel model = new SudokuPuzzleModel(sudokuSize);
+            	new SudokuPuzzleController(model,view);
             }
         }); 
 	}
