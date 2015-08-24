@@ -1,8 +1,8 @@
 # SudokuSolver
-Initial version 1 fixed for 9x9 Sudokugrid
+ version 2 with dynamic Sudokugrid
 
 # MVC
-List does not seem to work here properly.
+List does not seem to work here properly
   * Model   
     * See the sudoku.model Package
   
