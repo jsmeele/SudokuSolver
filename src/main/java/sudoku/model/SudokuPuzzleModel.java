@@ -3,17 +3,10 @@ package sudoku.model;
 public class SudokuPuzzleModel {
 	
 	private final int[][] sudokuPuzzle;
+	private int currentRow, currentCol;
 
 	public SudokuPuzzleModel(int sudokuSize){
 		sudokuPuzzle = new int[sudokuSize][sudokuSize];
-	}
-	
-	public int getValue(int row, int col){
-		return sudokuPuzzle[row][col];
-	}
-
-	public void setValue(int row, int col, int value){
-		sudokuPuzzle[row][col] = value;
 	}
 	
 	public int[][] getSudokuPuzzle(){
@@ -29,39 +22,45 @@ public class SudokuPuzzleModel {
 	}
 	
 	public boolean solveSudoku(SudokuPuzzleModel model){
-		int[] rowCol = searchEmptyField(model);
-		if (rowCol[0] == 99 && rowCol[1] == 99) {
+		if (!searchEmptyField(getSudokuPuzzle())) {
 			return true;
 		}
+		
+		int row = currentRow; 
+		int col = currentCol;
+		
 		for (int num = 1; num <= getRow(); num++) {
-			if (isSafe(rowCol[0], rowCol[1], num, model)) {
-				//System.out.println(rowCol[0] + "  " + rowCol[1] + "   " + num + "   " + isSafe(rowCol[0], rowCol[1], num, model));
-				model.setValue(rowCol[0], rowCol[1], num);
+			if (isSafe(row, col, num, model)) {
+				setValue(row, col, num);
 				if (solveSudoku(model)) {
 					return true;
 				} else {
-					model.setValue(rowCol[0], rowCol[1], 0);
+					setValue(row, col, 0);
 				}
 			}
 		}
 		return false;
 	}
 	
-	private int[] searchEmptyField(SudokuPuzzleModel model) {
-		int[] rowCol = new int[2];
-		rowCol[0] = 99;
-		rowCol[1] = 99;
-		
+	public int getValue(int row, int col){
+		return sudokuPuzzle[row][col];
+	}
+
+	private void setValue(int row, int col, int value){
+		sudokuPuzzle[row][col] = value;
+	}
+
+	private boolean searchEmptyField(int[][] model) {
 		for (int row = 0; row < getRow(); row++) {
             for (int col = 0; col < getColumn(); col++) {
-            	if (model.getValue(row, col) == 0) {
-            		rowCol[0] = row;
-            		rowCol[1] = col;
-            		return rowCol;
+            	if (getValue(row, col) == 0) {
+            		currentRow = row;
+            		currentCol = col;
+            		return true;
             	}
             }
         }
-		return rowCol;
+		return false;
 	}
 	
 	private boolean isSafe(int row, int col, int num, SudokuPuzzleModel model){
@@ -89,6 +88,7 @@ public class SudokuPuzzleModel {
         return true;
 	}
 	
+	
 	private int calculateSquareIndex(int index) {
 		switch ("" + Math.round(index/3)) { 
 		case "0":
@@ -107,6 +107,7 @@ public class SudokuPuzzleModel {
 		return index;
 	}
 	
+	
 	private boolean checkSquare(int indexRow, int indexCol, int num, SudokuPuzzleModel model) {
 		for (int row = 0 + calculateSquareIndex(indexRow); row < 3 + calculateSquareIndex(indexRow); row++) {
 			for (int col = 0 + calculateSquareIndex(indexCol); col < 3 + calculateSquareIndex(indexCol); col++) {
@@ -118,36 +119,24 @@ public class SudokuPuzzleModel {
         return true;	
 	}
 	
-//	public int getEmptyField(){
-//		for (int row = 0; row < getRow(); row++) {
-//            for (int col = 0; col < getColumn(); col++) {
-//            	if (sudokuPuzzle[row][col] == 0) {
-//            		System.out.println(row +"," + col + "  " + sudokuPuzzle[row][col]);
-//            		return sudokuPuzzle[row][col];
-//            	}
-//            }
-//        }
-//		return 9999;
-//	}
-//	
 //	private void waitSecs(int sec){
-//	long millis = (sec * 1000);
+//		long millis = (sec * 1000);
 //	
-//	//System.out.println("Wait");
-//	try {
-//		Thread.sleep((millis));
-//	} catch (InterruptedException e) {
-//		// TODO Auto-generated catch block
-//		e.printStackTrace();
-//	}
-//	//System.out.println("Go");
-//}
-//
-//private void printModel(SudokuModel model){
-//	for (int row = 0; row < 9; row++) {
-//		for (int col = 0; col < 9; col++) {
-//			System.out.print(model.getValue(row, col));
+//		//System.out.println("Wait");
+//		try {
+//			Thread.sleep((millis));
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
 //		}
-//    }
-//}
+//		//System.out.println("Go");
+//	}
+//	
+//	private void printModel(SudokuModel model){
+//		for (int row = 0; row < 9; row++) {
+//			for (int col = 0; col < 9; col++) {
+//				System.out.print(model.getValue(row, col));
+//			}
+//    	}
+//	}
 }
