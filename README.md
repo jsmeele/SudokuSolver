@@ -13,4 +13,9 @@ List does not seem to work here properly.
     * See the sudoku.controller Package
   
 # Backtracking/Recursive
-See the sudoku.solver Package
+See the function solveSudoku() in the SudokuPuzzleModel in the sudoku.model Package
+
+# Extra Information
+- JavaSE-1.8 (jre1.8.0_51) used
+- No dependencies
+- Dynamic dimension Sudoku puzzles via the sudoku.run Package (sudokuSize, squareRow, squareCol). 
