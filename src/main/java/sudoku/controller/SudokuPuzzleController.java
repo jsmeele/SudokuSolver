@@ -33,7 +33,7 @@ public class SudokuPuzzleController {
     public void controlSolveButton(){        
         ActionListener actionListener = new ActionListener() {
               public void actionPerformed(ActionEvent actionEvent) {
-            	  model.solveSudoku(model);
+            	  model.solveSudoku();
             	  updateView(solvedPuzzle);
               }
         };                
@@ -44,6 +44,7 @@ public class SudokuPuzzleController {
 		PropertyChangeListener propertyChangeListener = new PropertyChangeListener(){
     		public void propertyChange(PropertyChangeEvent evt) {
         		if (evt.getNewValue() != null) {  
+        			//Do Something Here
         			System.out.println(evt.getOldValue() + "  " + evt.getNewValue());
         		}
         	}
@@ -54,7 +55,6 @@ public class SudokuPuzzleController {
     			try {
 					view.getField(startPuzzle, row, col).commitEdit();
 				} catch (ParseException e) {
-					//Do Something Here
 					//e.printStackTrace();
 				}
     			view.getField(startPuzzle, row, col).addPropertyChangeListener("value", propertyChangeListener);

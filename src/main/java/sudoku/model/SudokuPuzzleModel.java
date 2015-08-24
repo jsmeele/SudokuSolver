@@ -3,10 +3,14 @@ package sudoku.model;
 public class SudokuPuzzleModel {
 	
 	private final int[][] sudokuPuzzle;
+	private final int squareRow;
+	private final int squareCol;
 	private int currentRow, currentCol;
 
-	public SudokuPuzzleModel(int sudokuSize){
+	public SudokuPuzzleModel(int sudokuSize, int squareRow, int squareCol){
 		sudokuPuzzle = new int[sudokuSize][sudokuSize];
+		this.squareRow = squareRow;
+		this.squareCol = squareCol;
 	}
 	
 	public int[][] getSudokuPuzzle(){
@@ -21,8 +25,8 @@ public class SudokuPuzzleModel {
 		return sudokuPuzzle[0].length;
 	}
 	
-	public boolean solveSudoku(SudokuPuzzleModel model){
-		if (!searchEmptyField(getSudokuPuzzle())) {
+	public boolean solveSudoku(){
+		if (!isEmptyField(getSudokuPuzzle())) {
 			return true;
 		}
 		
@@ -30,9 +34,9 @@ public class SudokuPuzzleModel {
 		int col = currentCol;
 		
 		for (int num = 1; num <= getRow(); num++) {
-			if (isSafe(row, col, num, model)) {
+			if (isSafe(row, col, num)) {
 				setValue(row, col, num);
-				if (solveSudoku(model)) {
+				if (solveSudoku()) {
 					return true;
 				} else {
 					setValue(row, col, 0);
@@ -50,7 +54,7 @@ public class SudokuPuzzleModel {
 		sudokuPuzzle[row][col] = value;
 	}
 
-	private boolean searchEmptyField(int[][] model) {
+	private boolean isEmptyField(int[][] model) {
 		for (int row = 0; row < getRow(); row++) {
             for (int col = 0; col < getColumn(); col++) {
             	if (getValue(row, col) == 0) {
@@ -63,55 +67,39 @@ public class SudokuPuzzleModel {
 		return false;
 	}
 	
-	private boolean isSafe(int row, int col, int num, SudokuPuzzleModel model){
-		if (checkRow(row, num, model) && checkColumn(col, num, model) && checkSquare(row, col, num, model)) {
+	private boolean isSafe(int row, int col, int num){
+		if (isNumRowValid(row, num) && isNumColumnValid(col, num) && isNumSquareValid(row, col, num)) {
 			return true;
 		}
 		return false;
 	}
 	
-	private boolean checkRow(int row, int num, SudokuPuzzleModel model) {
+	private boolean isNumRowValid(int row, int num) {
         for (int col = 0; col < getColumn(); col++) {
-        	if (model.getValue(row, col) == num){
+        	if (getValue(row, col) == num){
         		return false;
         	} 
         }
         return true;
 	}
 	
-	private boolean checkColumn(int col, int num, SudokuPuzzleModel model) {
+	private boolean isNumColumnValid(int col, int num) {
         for (int row = 0; row < getRow(); row++) {
-        	if (model.getValue(row, col) == num){
+        	if (getValue(row, col) == num){
         		return false;
         	}
         }
         return true;
 	}
 	
-	
-	private int calculateSquareIndex(int index) {
-		switch ("" + Math.round(index/3)) { 
-		case "0":
-			index = 0;
-			break;
-		case "1":
-			index = 3;
-			break;
-		case "2":
-			index = 6;
-			break;
-		case "3":
-			index = 9;
-			break;
-		}
-		return index;
+	private int calculateSquareIndex(int index, int factor) {
+		return (int) (factor * Math.round(Math.ceil(index/factor)));
 	}
 	
-	
-	private boolean checkSquare(int indexRow, int indexCol, int num, SudokuPuzzleModel model) {
-		for (int row = 0 + calculateSquareIndex(indexRow); row < 3 + calculateSquareIndex(indexRow); row++) {
-			for (int col = 0 + calculateSquareIndex(indexCol); col < 3 + calculateSquareIndex(indexCol); col++) {
-				if (model.getValue(row, col) == num){
+	private boolean isNumSquareValid(int indexRow, int indexCol, int num) {
+		for (int row = 0 + calculateSquareIndex(indexRow, squareRow); row < squareRow + calculateSquareIndex(indexRow, squareRow); row++) {
+			for (int col = 0 + calculateSquareIndex(indexCol, squareCol); col < squareCol + calculateSquareIndex(indexCol, squareCol); col++) {
+				if (getValue(row, col) == num){
 	        		return false;
 	        	}
 			}
